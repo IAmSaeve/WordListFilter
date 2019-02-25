@@ -13,16 +13,13 @@ namespace Dict
     {
         static void Main(string[] args)
         {
-            if (File.Exists(Environment.CurrentDirectory + "/Words-DK.txt"))
+            // Download dictionary from http://www.stavekontrolden.dk/
+            using (WebClient wc = new WebClient())
             {
-                File.Delete(Environment.CurrentDirectory + "/Words-DK.txt");
+                wc.DownloadFile("http://www.stavekontrolden.dk/main/sspinputfiles/da_DK.dic", Environment.CurrentDirectory + "/Words-DK.txt");
             }
 
-            using (WebClient myWebClient = new WebClient())
-            {
-                myWebClient.DownloadFile("http://www.stavekontrolden.dk/main/sspinputfiles/da_DK.dic", Environment.CurrentDirectory + "/Words-DK.txt");
-            }
-
+            // Variables
             var wordList = File.ReadAllLines(Environment.CurrentDirectory + "/Words-DK.txt");
             var filtered = new List<string>();
             var slashOccurrences = 0;
@@ -30,6 +27,7 @@ namespace Dict
             var word = "";
             var outputFile = Environment.CurrentDirectory + "/FilteredList.txt";
 
+            // Loop to clean data
             foreach (var w in wordList)
             {
                 if (w.Contains("/"))
@@ -53,25 +51,21 @@ namespace Dict
                     continue;
                 }
 
+                // Make all words TitleCase and add them to the "filtered" list
                 word = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(word.ToLower());
                 filtered.Add(word);
             }
 
+            // Remove duplicates and sort alphabetically
+            int beforeDuplicates = filtered.Count();
             filtered = filtered.Distinct().ToList();
             filtered.Sort();
+            int duplicates = beforeDuplicates - filtered.Count();
 
-            Console.WriteLine($"Removed a total of {slashOccurrences} '/' and a total of {junk} junk strings");
+            // Print statistics
+            Console.WriteLine($"Removed a total of {slashOccurrences} '/', a total of {junk} junk strings and a total of {duplicates} duplicats");
 
-            if (File.Exists(outputFile))
-            {
-                File.Delete(outputFile);
-                File.Create(outputFile).Dispose();
-            }
-            else
-            {
-                File.Create(outputFile).Dispose();
-            }
-
+            // Write clean data to new file
             File.WriteAllLines(outputFile, filtered);
         }
     }
