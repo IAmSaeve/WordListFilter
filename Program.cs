@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace Dict
 {
@@ -13,11 +14,18 @@ namespace Dict
     {
         static void Main(string[] args)
         {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            
             // Download dictionary from http://www.stavekontrolden.dk/
             using (WebClient wc = new WebClient())
             {
                 wc.DownloadFile("http://www.stavekontrolden.dk/main/sspinputfiles/da_DK.dic", Environment.CurrentDirectory + "/Words-DK.txt");
             }
+
+            stopWatch.Stop();
+            Console.WriteLine($"Download took a total of {stopWatch.Elapsed.Seconds} seconds");
+
 
             // Variables
             var wordList = File.ReadAllLines(Environment.CurrentDirectory + "/Words-DK.txt");
@@ -27,6 +35,7 @@ namespace Dict
             var word = "";
             var outputFile = Environment.CurrentDirectory + "/FilteredList.txt";
 
+            stopWatch.Restart();
             // Loop to clean data
             foreach (var w in wordList)
             {
@@ -61,6 +70,8 @@ namespace Dict
             filtered = filtered.Distinct().ToList();
             filtered.Sort();
             int duplicates = beforeDuplicates - filtered.Count();
+            stopWatch.Stop();
+            Console.WriteLine($"Filtering the data took a total of {stopWatch.Elapsed.Seconds} Seconds and {stopWatch.Elapsed.Milliseconds} Milliseconds");
 
             // Print statistics
             Console.WriteLine($"Removed a total of {slashOccurrences} '/', a total of {junk} junk strings and a total of {duplicates} duplicats");
