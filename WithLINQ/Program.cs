@@ -29,11 +29,10 @@ namespace WithLINQ
             {
                 wordList = new List<string>((wc.DownloadString(uri)).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
             }
-
+            
+            // Stop counter and print elapsed time
             stopWatch.Stop();
-            Console.WriteLine($"Download took a total of {stopWatch.Elapsed.Seconds} seconds");
-
-
+            Console.WriteLine($"Download took a total of {stopWatch.Elapsed.Seconds} seconds and {stopWatch.Elapsed.Milliseconds} Milliseconds");
             stopWatch.Restart();
 
             // Loop to clean data
@@ -49,6 +48,7 @@ namespace WithLINQ
                         .ToList();
             filtered.Sort();
 
+            // Stop counter and print elapsed time
             stopWatch.Stop();
             Console.WriteLine($"Filtering the data took a total of {stopWatch.Elapsed.Seconds} Seconds and {stopWatch.Elapsed.Milliseconds} Milliseconds");
 

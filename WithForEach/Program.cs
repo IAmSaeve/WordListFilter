@@ -14,28 +14,29 @@ namespace Dict
     {
         static void Main(string[] args)
         {
+            // Variables
+            List<string> wordList = new List<string>();
+            var filtered = new List<string>();
+            var junk = 0;
+            var slashOccurrences = 0;
+            var word = "";
+            var outputFile = Environment.CurrentDirectory + "/FilteredList.txt";
+            var uri = "http://www.stavekontrolden.dk/main/sspinputfiles/da_DK.dic";
             Stopwatch stopWatch = new Stopwatch();
+
             stopWatch.Start();
-            
+
             // Download dictionary from http://www.stavekontrolden.dk/
             using (WebClient wc = new WebClient())
             {
-                wc.DownloadFile("http://www.stavekontrolden.dk/main/sspinputfiles/da_DK.dic", Environment.CurrentDirectory + "/Words-DK.txt");
+                wordList = new List<string>((wc.DownloadString(uri)).Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
             }
 
+            // Stop counter and print elapsed time
             stopWatch.Stop();
-            Console.WriteLine($"Download took a total of {stopWatch.Elapsed.Seconds} seconds");
-
-
-            // Variables
-            var wordList = File.ReadAllLines(Environment.CurrentDirectory + "/Words-DK.txt");
-            var filtered = new List<string>();
-            var slashOccurrences = 0;
-            var junk = 0;
-            var word = "";
-            var outputFile = Environment.CurrentDirectory + "/FilteredList.txt";
-
+            Console.WriteLine($"Download took a total of {stopWatch.Elapsed.Seconds} seconds and {stopWatch.Elapsed.Milliseconds} Milliseconds");
             stopWatch.Restart();
+
             // Loop to clean data
             foreach (var w in wordList)
             {
@@ -44,17 +45,9 @@ namespace Dict
                     word = w.Split("/")[0];
                     slashOccurrences++;
                 }
-                if (string.IsNullOrEmpty(word))
-                {
-                    junk++;
-                    continue;
-                }
 
-                bool isNumeric = int.TryParse(word[0].ToString(), out int n);
-
-                if ((word.Length < 2 && word.ToLower() != "å") ||
-                word[0] == '"' || word[0] == '-' || isNumeric ||
-                word.Last() == '-' || word.Last().ToString() == "'")
+                if (CheckSingleLetter(word) || CheckQoutes(word) || CheckFirstDash(word) ||
+                    IsNumeric(word) || CheckLastDash(word) || CheckApostrophe(word))
                 {
                     junk++;
                     continue;
@@ -70,6 +63,8 @@ namespace Dict
             filtered = filtered.Distinct().ToList();
             filtered.Sort();
             int duplicates = beforeDuplicates - filtered.Count();
+
+            // Stop counter and print elapsed time
             stopWatch.Stop();
             Console.WriteLine($"Filtering the data took a total of {stopWatch.Elapsed.Seconds} Seconds and {stopWatch.Elapsed.Milliseconds} Milliseconds");
 
@@ -79,5 +74,12 @@ namespace Dict
             // Write clean data to new file
             File.WriteAllLines(outputFile, filtered);
         }
+
+        private static bool CheckApostrophe(string w) => w.Last().ToString() == "'";
+        private static bool CheckLastDash(string w) => w.Last() == '-';
+        private static bool IsNumeric(string w) => int.TryParse(w[0].ToString(), out int n);
+        private static bool CheckFirstDash(string w) => w[0] == '-';
+        private static bool CheckQoutes(string w) => w[0] == '"';
+        private static bool CheckSingleLetter(string w) => (w.Length < 2 && w.ToLower() != "å");
     }
 }
