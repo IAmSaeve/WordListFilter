@@ -10,3 +10,4 @@ Simple tools for downloading and cleaning a wordlist from http://www.stavekontro
 - [ ] Add link to API 
 - [ ] Ask permission
 - [ ] Write *how to* section
+- [ ] Move to `String.StartsWith` & `String.EndsWith` for filters
