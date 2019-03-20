@@ -6,7 +6,7 @@ using System.Net.Http;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 
-namespace NavneDataXls
+namespace NameDataXls
 {
     class Program
     {
