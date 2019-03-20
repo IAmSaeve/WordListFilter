@@ -19,3 +19,4 @@ Simple tools for downloading and processing text data from various sources
 * [X] Move to `String.StartsWith` & `String.EndsWith` for filters
 * [X] Borrow list of names from [Godkendte fornavne i Danmark](https://ast.dk/born-familie/hvad-handler-din-klage-om/navne/navnelister/godkendte-fornavne)
 * [ ] Borrow city names form this nice user [Stefanoruth](https://gist.github.com/stefanoruth/9e8db716746890d3b700001e7464c80a)
+* [ ] Find way to craft json objcets from string data
