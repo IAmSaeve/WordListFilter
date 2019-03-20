@@ -63,11 +63,11 @@ namespace WithLINQ
 
         private static bool CheckDot(string w) => !w.Contains(".");
         private static bool CheckLinesWithSpace(string w) => !w.Contains(" ");
-        private static bool CheckApostrophe(string w) => w.Last().ToString() != "'";
-        private static bool CheckLastDash(string w) => w.Last() != '-';
+        private static bool CheckApostrophe(string w) => !w.EndsWith("'");
+        private static bool CheckLastDash(string w) => !w.EndsWith('-');
         private static bool IsNumeric(string w) => int.TryParse(w[0].ToString(), out int n);
-        private static bool CheckFirstDash(string w) => w[0] != '-';
-        private static bool CheckQoutes(string w) => w[0] != '"';
+        private static bool CheckFirstDash(string w) => !w.StartsWith('-');
+        private static bool CheckQoutes(string w) => !w.StartsWith('"');
         private static bool CheckSingleLetter(string w) => (w.Length < 2 && w.ToLower() != "å");
     }
 }
