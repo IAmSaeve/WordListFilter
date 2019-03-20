@@ -8,7 +8,7 @@ using System.Threading;
 using System.Globalization;
 using System.Diagnostics;
 
-namespace Dict
+namespace WithForEach
 {
     class Program
     {
